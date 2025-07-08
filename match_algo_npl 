@@ -1,0 +1,558 @@
+"""
+Real-time Candidate-Employee Matching Service
+
+This service provides intelligent matching algorithms to calculate real match scores
+between candidates and employees for referral optimization.
+"""
+
+import logging
+import json
+import asyncio
+from typing import Dict, List, Optional, Any, Tuple
+from datetime import datetime, timedelta
+import numpy as np
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
+import re
+
+logger = logging.getLogger(__name__)
+
+class MatchingService:
+    """
+    Service for calculating real match scores between candidates and employees
+    """
+    
+    def __init__(self):
+        # Matching weights based on importance for referral success
+        self.weights = {
+            "skills_alignment": 0.35,      # Technical and soft skills match
+            "experience_relevance": 0.25,  # Experience level and career path
+            "company_industry": 0.15,      # Company and industry alignment
+            "role_compatibility": 0.15,    # Position and department match
+            "performance_indicators": 0.10  # Employee's referral success rate
+        }
+        
+        # Initialize TF-IDF vectorizer for text similarity
+        self.vectorizer = TfidfVectorizer(
+            stop_words='english',
+            max_features=1000,
+            ngram_range=(1, 2),
+            lowercase=True
+        )
+        
+        # Common tech skills for better matching
+        self.tech_skills = {
+            'programming': ['python', 'javascript', 'java', 'c++', 'react', 'node.js', 'angular', 'vue'],
+            'data': ['sql', 'mongodb', 'postgresql', 'data analysis', 'machine learning', 'ai'],
+            'cloud': ['aws', 'azure', 'gcp', 'docker', 'kubernetes', 'terraform'],
+            'mobile': ['ios', 'android', 'react native', 'flutter', 'swift', 'kotlin'],
+            'devops': ['ci/cd', 'jenkins', 'git', 'linux', 'monitoring', 'logging']
+        }
+    
+    async def calculate_match_score(
+        self, 
+        candidate_data: Dict[str, Any], 
+        employee_data: Dict[str, Any],
+        referral_context: Optional[Dict[str, Any]] = None
+    ) -> Dict[str, Any]:
+        """
+        Calculate comprehensive match score between candidate and employee
+        
+        Returns:
+            Dict containing match score and detailed breakdown
+        """
+        try:
+            # Calculate individual component scores
+            skills_score = self._calculate_skills_alignment(candidate_data, employee_data)
+            experience_score = self._calculate_experience_relevance(candidate_data, employee_data)
+            company_score = self._calculate_company_industry_alignment(candidate_data, employee_data, referral_context)
+            role_score = self._calculate_role_compatibility(candidate_data, employee_data, referral_context)
+            performance_score = self._calculate_performance_indicators(employee_data)
+            
+            # Calculate weighted overall score
+            overall_score = (
+                skills_score * self.weights["skills_alignment"] +
+                experience_score * self.weights["experience_relevance"] +
+                company_score * self.weights["company_industry"] +
+                role_score * self.weights["role_compatibility"] +
+                performance_score * self.weights["performance_indicators"]
+            )
+            
+            # Ensure score is between 0-100
+            overall_score = max(0, min(100, overall_score))
+            
+            # Calculate confidence based on data availability
+            confidence = self._calculate_confidence(candidate_data, employee_data)
+            
+            return {
+                "overall_score": round(overall_score, 1),
+                "confidence": round(confidence, 2),
+                "breakdown": {
+                    "skills_alignment": {
+                        "score": round(skills_score, 1),
+                        "weight": self.weights["skills_alignment"],
+                        "contribution": round(skills_score * self.weights["skills_alignment"], 1)
+                    },
+                    "experience_relevance": {
+                        "score": round(experience_score, 1),
+                        "weight": self.weights["experience_relevance"],
+                        "contribution": round(experience_score * self.weights["experience_relevance"], 1)
+                    },
+                    "company_industry": {
+                        "score": round(company_score, 1),
+                        "weight": self.weights["company_industry"],
+                        "contribution": round(company_score * self.weights["company_industry"], 1)
+                    },
+                    "role_compatibility": {
+                        "score": round(role_score, 1),
+                        "weight": self.weights["role_compatibility"],
+                        "contribution": round(role_score * self.weights["role_compatibility"], 1)
+                    },
+                    "performance_indicators": {
+                        "score": round(performance_score, 1),
+                        "weight": self.weights["performance_indicators"],
+                        "contribution": round(performance_score * self.weights["performance_indicators"], 1)
+                    }
+                },
+                "insights": self._generate_match_insights(
+                    candidate_data, employee_data, overall_score, {
+                        "skills": skills_score,
+                        "experience": experience_score,
+                        "company": company_score,
+                        "role": role_score,
+                        "performance": performance_score
+                    }
+                )
+            }
+            
+        except Exception as e:
+            logger.error(f"Error calculating match score: {str(e)}")
+            return {
+                "overall_score": 50.0,  # Default middle score
+                "confidence": 0.1,
+                "breakdown": {},
+                "insights": ["Unable to calculate detailed match score due to insufficient data"],
+                "error": str(e)
+            }
+    
+    def _calculate_skills_alignment(self, candidate: Dict[str, Any], employee: Dict[str, Any]) -> float:
+        """Calculate skills alignment score (0-100)"""
+        try:
+            # Get skills from both profiles
+            candidate_skills = self._extract_skills(candidate)
+            employee_skills = self._extract_skills(employee)
+            
+            if not candidate_skills or not employee_skills:
+                return 50.0  # Default score if no skills data
+            
+            # Calculate different types of skill matches
+            exact_matches = len(set(candidate_skills) & set(employee_skills))
+            semantic_similarity = self._calculate_semantic_similarity(candidate_skills, employee_skills)
+            tech_stack_overlap = self._calculate_tech_stack_overlap(candidate_skills, employee_skills)
+            
+            # Weight the different types of matches
+            exact_score = min(100, (exact_matches / max(len(candidate_skills), len(employee_skills))) * 100)
+            semantic_score = semantic_similarity * 100
+            tech_score = tech_stack_overlap * 100
+            
+            # Combine scores with weights
+            final_score = (exact_score * 0.5) + (semantic_score * 0.3) + (tech_score * 0.2)
+            
+            return max(0, min(100, final_score))
+            
+        except Exception as e:
+            logger.error(f"Error calculating skills alignment: {str(e)}")
+            return 50.0
+    
+    def _calculate_experience_relevance(self, candidate: Dict[str, Any], employee: Dict[str, Any]) -> float:
+        """Calculate experience relevance score (0-100)"""
+        try:
+            candidate_exp = candidate.get("experience_years", 0) or 0
+            employee_exp = employee.get("experience_years", 0) or 0
+            
+            # Experience gap analysis - ideal is employee having 2-10 years more experience
+            exp_gap = employee_exp - candidate_exp
+            
+            if exp_gap < 0:
+                # Employee has less experience - not ideal for mentoring
+                score = max(0, 50 + (exp_gap * 5))  # Penalty for negative gap
+            elif exp_gap <= 2:
+                # Similar experience level - good for peer guidance
+                score = 80 + (exp_gap * 10)
+            elif exp_gap <= 10:
+                # Good mentoring gap
+                score = 90 - ((exp_gap - 2) * 2)
+            else:
+                # Too large gap - might not be relatable
+                score = max(40, 70 - ((exp_gap - 10) * 3))
+            
+            # Adjust based on career level compatibility
+            candidate_level = self._determine_career_level(candidate_exp)
+            employee_level = self._determine_career_level(employee_exp)
+            
+            # Bonus for good level progression (junior -> mid, mid -> senior, etc.)
+            level_compatibility = self._calculate_level_compatibility(candidate_level, employee_level)
+            score = score * level_compatibility
+            
+            return max(0, min(100, score))
+            
+        except Exception as e:
+            logger.error(f"Error calculating experience relevance: {str(e)}")
+            return 50.0
+    
+    def _calculate_company_industry_alignment(
+        self, 
+        candidate: Dict[str, Any], 
+        employee: Dict[str, Any],
+        referral_context: Optional[Dict[str, Any]] = None
+    ) -> float:
+        """Calculate company and industry alignment score (0-100)"""
+        try:
+            score = 50.0  # Base score
+            
+            # Get target company from referral context or candidate preference
+            target_company = None
+            if referral_context:
+                target_company = referral_context.get("company")
+            
+            employee_company = employee.get("company", "").lower()
+            candidate_company = candidate.get("company", "").lower()
+            
+            if target_company:
+                target_company = target_company.lower()
+                # Perfect match if employee works at target company
+                if employee_company == target_company:
+                    score += 30
+                # Partial match for similar company names
+                elif target_company in employee_company or employee_company in target_company:
+                    score += 15
+            
+            # Industry alignment based on company similarity
+            if candidate_company and employee_company:
+                if candidate_company == employee_company:
+                    score += 20  # Same company experience
+                elif self._are_similar_companies(candidate_company, employee_company):
+                    score += 10  # Similar industry
+            
+            # Department alignment
+            candidate_dept = candidate.get("department", "").lower()
+            employee_dept = employee.get("department", "").lower()
+            
+            if candidate_dept and employee_dept:
+                if candidate_dept == employee_dept:
+                    score += 15
+                elif self._are_related_departments(candidate_dept, employee_dept):
+                    score += 8
+            
+            return max(0, min(100, score))
+            
+        except Exception as e:
+            logger.error(f"Error calculating company industry alignment: {str(e)}")
+            return 50.0
+    
+    def _calculate_role_compatibility(
+        self, 
+        candidate: Dict[str, Any], 
+        employee: Dict[str, Any],
+        referral_context: Optional[Dict[str, Any]] = None
+    ) -> float:
+        """Calculate role compatibility score (0-100)"""
+        try:
+            score = 50.0  # Base score
+            
+            # Get target position from referral context
+            target_position = None
+            if referral_context:
+                target_position = referral_context.get("position", "").lower()
+            
+            employee_position = employee.get("position", "").lower()
+            candidate_position = candidate.get("position", "").lower()
+            
+            if target_position and employee_position:
+                # Check if employee's current role matches target role
+                if target_position == employee_position:
+                    score += 25  # Perfect role match
+                elif target_position in employee_position or employee_position in target_position:
+                    score += 15  # Partial role match
+                elif self._are_related_roles(target_position, employee_position):
+                    score += 10  # Related roles
+            
+            # Career progression compatibility
+            if candidate_position and employee_position:
+                if self._is_career_progression(candidate_position, employee_position):
+                    score += 20  # Good career progression path
+                elif candidate_position == employee_position:
+                    score += 10  # Same level - good for peer insights
+            
+            return max(0, min(100, score))
+            
+        except Exception as e:
+            logger.error(f"Error calculating role compatibility: {str(e)}")
+            return 50.0
+    
+    def _calculate_performance_indicators(self, employee: Dict[str, Any]) -> float:
+        """Calculate employee performance indicators score (0-100)"""
+        try:
+            base_score = 50.0
+            
+            # Rating score (assuming 0-5 scale)
+            rating = employee.get("rating", 0) or 0
+            if rating > 0:
+                rating_score = (rating / 5.0) * 40  # Max 40 points from rating
+                base_score += rating_score - 20  # Adjust from base
+            
+            # Referral success metrics
+            total_referrals = employee.get("total_referrals", 0) or 0
+            successful_referrals = employee.get("successful_referrals", 0) or 0
+            
+            if total_referrals > 0:
+                success_rate = successful_referrals / total_referrals
+                success_score = success_rate * 30  # Max 30 points from success rate
+                base_score += success_score - 15  # Adjust from base
+                
+                # Bonus for high volume of referrals (experience factor)
+                if total_referrals >= 10:
+                    base_score += 10
+                elif total_referrals >= 5:
+                    base_score += 5
+            
+            # Activity/engagement bonus
+            if employee.get("is_verified"):
+                base_score += 5
+            
+            if employee.get("is_active"):
+                base_score += 5
+            
+            return max(0, min(100, base_score))
+            
+        except Exception as e:
+            logger.error(f"Error calculating performance indicators: {str(e)}")
+            return 50.0
+    
+    def _extract_skills(self, user_data: Dict[str, Any]) -> List[str]:
+        """Extract and normalize skills from user data"""
+        skills = user_data.get("skills", [])
+        if isinstance(skills, str):
+            try:
+                skills = json.loads(skills)
+            except:
+                skills = [s.strip() for s in skills.split(",")]
+        
+        # Normalize skills (lowercase, strip whitespace)
+        return [skill.lower().strip() for skill in skills if skill and skill.strip()]
+    
+    def _calculate_semantic_similarity(self, skills1: List[str], skills2: List[str]) -> float:
+        """Calculate semantic similarity between skill sets using simple keyword matching"""
+        try:
+            if not skills1 or not skills2:
+                return 0.0
+            
+            # Create combined skill text
+            text1 = " ".join(skills1)
+            text2 = " ".join(skills2)
+            
+            # Simple token-based similarity
+            tokens1 = set(text1.split())
+            tokens2 = set(text2.split())
+            
+            intersection = len(tokens1 & tokens2)
+            union = len(tokens1 | tokens2)
+            
+            return intersection / union if union > 0 else 0.0
+            
+        except Exception as e:
+            logger.error(f"Error calculating semantic similarity: {str(e)}")
+            return 0.0
+    
+    def _calculate_tech_stack_overlap(self, skills1: List[str], skills2: List[str]) -> float:
+        """Calculate technology stack overlap"""
+        try:
+            tech_matches = 0
+            total_tech_categories = len(self.tech_skills)
+            
+            for category, tech_list in self.tech_skills.items():
+                skills1_in_category = [s for s in skills1 if any(tech in s for tech in tech_list)]
+                skills2_in_category = [s for s in skills2 if any(tech in s for tech in tech_list)]
+                
+                if skills1_in_category and skills2_in_category:
+                    # Check for overlaps within this tech category
+                    overlap = len(set(skills1_in_category) & set(skills2_in_category))
+                    if overlap > 0:
+                        tech_matches += 1
+            
+            return tech_matches / total_tech_categories if total_tech_categories > 0 else 0.0
+            
+        except Exception as e:
+            logger.error(f"Error calculating tech stack overlap: {str(e)}")
+            return 0.0
+    
+    def _determine_career_level(self, experience_years: int) -> str:
+        """Determine career level based on experience years"""
+        if experience_years <= 2:
+            return "junior"
+        elif experience_years <= 5:
+            return "mid"
+        elif experience_years <= 10:
+            return "senior"
+        else:
+            return "lead"
+    
+    def _calculate_level_compatibility(self, candidate_level: str, employee_level: str) -> float:
+        """Calculate compatibility between career levels"""
+        level_hierarchy = {"junior": 0, "mid": 1, "senior": 2, "lead": 3}
+        
+        candidate_idx = level_hierarchy.get(candidate_level, 1)
+        employee_idx = level_hierarchy.get(employee_level, 2)
+        
+        level_gap = employee_idx - candidate_idx
+        
+        if level_gap == 1:
+            return 1.1  # Perfect mentoring gap
+        elif level_gap == 0:
+            return 1.0  # Same level - good for peer support
+        elif level_gap == 2:
+            return 0.95  # Decent mentoring gap
+        elif level_gap < 0:
+            return 0.8  # Employee is junior - not ideal
+        else:
+            return 0.85  # Large gap but still valuable
+    
+    def _are_similar_companies(self, company1: str, company2: str) -> bool:
+        """Check if companies are in similar industries"""
+        # Simple heuristic - could be enhanced with industry classification
+        tech_indicators = ["tech", "software", "ai", "data", "cloud", "digital"]
+        finance_indicators = ["bank", "finance", "capital", "investment", "trading"]
+        healthcare_indicators = ["health", "medical", "pharma", "biotech", "hospital"]
+        
+        def get_industry(company):
+            company_lower = company.lower()
+            if any(indicator in company_lower for indicator in tech_indicators):
+                return "tech"
+            elif any(indicator in company_lower for indicator in finance_indicators):
+                return "finance"
+            elif any(indicator in company_lower for indicator in healthcare_indicators):
+                return "healthcare"
+            return "other"
+        
+        return get_industry(company1) == get_industry(company2)
+    
+    def _are_related_departments(self, dept1: str, dept2: str) -> bool:
+        """Check if departments are related"""
+        related_groups = [
+            ["engineering", "development", "software", "tech", "it"],
+            ["marketing", "sales", "business development", "growth"],
+            ["finance", "accounting", "treasury", "fp&a"],
+            ["hr", "people", "talent", "recruiting"],
+            ["product", "design", "ux", "ui"],
+            ["operations", "ops", "supply chain", "logistics"]
+        ]
+        
+        dept1_lower = dept1.lower()
+        dept2_lower = dept2.lower()
+        
+        for group in related_groups:
+            if any(keyword in dept1_lower for keyword in group) and \
+               any(keyword in dept2_lower for keyword in group):
+                return True
+        
+        return False
+    
+    def _are_related_roles(self, role1: str, role2: str) -> bool:
+        """Check if roles are related"""
+        # Simple keyword-based relationship detection
+        role1_keywords = set(role1.lower().split())
+        role2_keywords = set(role2.lower().split())
+        
+        # Check for common role keywords
+        overlap = len(role1_keywords & role2_keywords)
+        return overlap >= 1
+    
+    def _is_career_progression(self, current_role: str, target_role: str) -> bool:
+        """Check if target role represents career progression"""
+        progression_indicators = [
+            ("junior", "senior"),
+            ("associate", "manager"),
+            ("analyst", "senior analyst"),
+            ("developer", "lead developer"),
+            ("engineer", "senior engineer"),
+            ("specialist", "lead specialist")
+        ]
+        
+        current_lower = current_role.lower()
+        target_lower = target_role.lower()
+        
+        for junior_term, senior_term in progression_indicators:
+            if junior_term in current_lower and senior_term in target_lower:
+                return True
+        
+        return False
+    
+    def _calculate_confidence(self, candidate: Dict[str, Any], employee: Dict[str, Any]) -> float:
+        """Calculate confidence in the match score based on data availability"""
+        confidence_factors = []
+        
+        # Skills data availability
+        candidate_skills = self._extract_skills(candidate)
+        employee_skills = self._extract_skills(employee)
+        
+        if candidate_skills and employee_skills:
+            skills_confidence = min(1.0, (len(candidate_skills) + len(employee_skills)) / 20)
+            confidence_factors.append(skills_confidence * 0.3)
+        
+        # Experience data
+        if candidate.get("experience_years") is not None and employee.get("experience_years") is not None:
+            confidence_factors.append(0.2)
+        
+        # Company/position data
+        if candidate.get("company") and employee.get("company"):
+            confidence_factors.append(0.15)
+        
+        if candidate.get("position") and employee.get("position"):
+            confidence_factors.append(0.15)
+        
+        # Employee performance data
+        if employee.get("rating") or employee.get("total_referrals"):
+            confidence_factors.append(0.2)
+        
+        return min(1.0, sum(confidence_factors))
+    
+    def _generate_match_insights(
+        self, 
+        candidate: Dict[str, Any], 
+        employee: Dict[str, Any], 
+        overall_score: float,
+        component_scores: Dict[str, float]
+    ) -> List[str]:
+        """Generate human-readable insights about the match"""
+        insights = []
+        
+        # Overall assessment
+        if overall_score >= 80:
+            insights.append("Excellent match with strong alignment across multiple factors")
+        elif overall_score >= 65:
+            insights.append("Good match with solid compatibility")
+        elif overall_score >= 50:
+            insights.append("Moderate match with some areas of alignment")
+        else:
+            insights.append("Limited match - consider alternative referrers")
+        
+        # Component-specific insights
+        if component_scores.get("skills", 0) >= 70:
+            insights.append("Strong technical skills alignment")
+        elif component_scores.get("skills", 0) < 40:
+            insights.append("Limited skills overlap - may need skill development guidance")
+        
+        if component_scores.get("experience", 0) >= 70:
+            insights.append("Excellent experience level match for mentoring")
+        elif component_scores.get("experience", 0) < 40:
+            insights.append("Experience gap may present challenges")
+        
+        if component_scores.get("performance", 0) >= 70:
+            insights.append("Employee has strong referral track record")
+        elif component_scores.get("performance", 0) < 40:
+            insights.append("Employee has limited referral history")
+        
+        return insights
+
+# Global instance
+matching_service = MatchingService() 

@@ -1,0 +1,849 @@
+/Users/ronitvirwani/Library/Python/3.9/lib/python/site-packages/urllib3/__init__.py:35: NotOpenSSLWarning: urllib3 v2 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020
+  warnings.warn(
+=== EXACT RESPONSE STRUCTURE ===
+{
+  "success": true,
+  "data": {
+    "assessment_metadata": {
+      "timestamp": "2025-06-15T08:33:45.767756",
+      "user_id": "14",
+      "processing_time": 0,
+      "agents_used": [
+        "skills_extractor",
+        "resume_analyzer",
+        "job_matcher"
+      ],
+      "vector_search_enabled": true,
+      "confidence_scores": {
+        "skills_extraction": 0.5199999999999999,
+        "resume_analysis": 0.64,
+        "job_matching": 0
+      }
+    },
+    "agent_results": {
+      "skills": {
+        "success": true,
+        "data": {
+          "extracted_skills": [
+            {
+              "skill": "Python",
+              "category": "programming_languages",
+              "experience_level": "intermediate",
+              "confidence": 0.8,
+              "context": "listed as a technical skill",
+              "years_experience": "5 years",
+              "proficiency_indicators": [
+                "explicit mention",
+                "years of experience"
+              ]
+            },
+            {
+              "skill": "JavaScript",
+              "category": "programming_languages",
+              "experience_level": "intermediate",
+              "confidence": 0.8,
+              "context": "listed as a technical skill",
+              "years_experience": "5 years",
+              "proficiency_indicators": [
+                "explicit mention",
+                "years of experience"
+              ]
+            },
+            {
+              "skill": "React",
+              "category": "frameworks_libraries",
+              "experience_level": "intermediate",
+              "confidence": 0.7,
+              "context": "listed as a technical skill",
+              "years_experience": "5 years",
+              "proficiency_indicators": [
+                "explicit mention",
+                "years of experience"
+              ]
+            },
+            {
+              "skill": "Software Engineer",
+              "category": "soft_skills",
+              "experience_level": "advanced",
+              "confidence": 0.9,
+              "context": "job title",
+              "years_experience": "5 years",
+              "proficiency_indicators": [
+                "job title",
+                "years of experience"
+              ]
+            }
+          ],
+          "skill_frequency": {
+            "python": {
+              "count": 1,
+              "prominence": "low"
+            },
+            "javascript": {
+              "count": 1,
+              "prominence": "low"
+            },
+            "react": {
+              "count": 1,
+              "prominence": "low"
+            },
+            "software engineer": {
+              "count": 1,
+              "prominence": "low"
+            }
+          },
+          "skill_clusters": {
+            "programming_languages": [
+              "Python",
+              "JavaScript"
+            ],
+            "frameworks_libraries": [
+              "React"
+            ],
+            "soft_skills": [
+              "Software Engineer"
+            ]
+          },
+          "market_analysis": {
+            "high_demand_skills": [
+              "Python",
+              "JavaScript",
+              "React",
+              "Software Engineer"
+            ],
+            "emerging_skills": [
+              "Serverless Architecture",
+              "Cloud Native",
+              "DevOps"
+            ],
+            "stable_skills": [
+              "Java",
+              "C++",
+              "Data Structures"
+            ],
+            "declining_skills": [
+              "Perl",
+              "Ruby on Rails"
+            ],
+            "salary_impact": {
+              "high_value": [
+                "Python",
+                "JavaScript",
+                "React"
+              ],
+              "moderate_value": [
+                "Java",
+                "C++",
+                "Software Engineer"
+              ],
+              "entry_level": [
+                "HTML/CSS",
+                "JavaScript"
+              ]
+            },
+            "industry_trends": [
+              "Increased adoption of AI/ML",
+              "Growing demand for cloud computing",
+              "Rise of cybersecurity threats"
+            ]
+          },
+          "skill_gaps": {
+            "missing_complementary_skills": [],
+            "suggested_additions": [
+              "Testing frameworks"
+            ],
+            "skill_depth_recommendations": []
+          }
+        },
+        "confidence": 0.5199999999999999,
+        "processing_time": 3.6329610347747803,
+        "error": null
+      },
+      "resume": {
+        "success": true,
+        "data": {
+          "overall_score": 20,
+          "section_analysis": {
+            "contact_info": {
+              "present": false,
+              "completeness": 0,
+              "issues": [
+                "No contact information provided (email, phone number, LinkedIn profile, etc.)"
+              ],
+              "recommendations": [
+                "Include a professional email address, phone number, and LinkedIn profile (if applicable)"
+              ]
+            },
+            "professional_summary": {
+              "present": true,
+              "quality": 30,
+              "length": "too_short",
+              "impact": 20,
+              "recommendations": [
+                "Expand the professional summary to 2-3 sentences, highlighting key achievements and career goals"
+              ]
+            },
+            "work_experience": {
+              "present": false,
+              "number_of_positions": 0,
+              "quality": 0,
+              "quantifiable_achievements": 0,
+              "action_verbs_used": 0,
+              "recommendations": [
+                "Include a work experience section with specific job titles, company names, dates, and achievements"
+              ]
+            },
+            "education": {
+              "present": false,
+              "relevance": 0,
+              "completeness": 0,
+              "recommendations": [
+                "Include an education section with degree, institution, and relevant coursework"
+              ]
+            },
+            "skills": {
+              "present": true,
+              "organization": 20,
+              "relevance": 80,
+              "technical_vs_soft": {
+                "technical": 3,
+                "soft": 0
+              },
+              "recommendations": [
+                "Organize skills into categories (e.g., programming languages, frameworks, databases) and consider adding soft skills"
+              ]
+            }
+          },
+          "content_quality": {
+            "readability_score": 40,
+            "professional_language": 60,
+            "quantifiable_achievements": 0,
+            "action_verbs_count": 0,
+            "weak_phrases_count": 1,
+            "grammar_issues": [
+              "Lack of articles and conjunctions"
+            ],
+            "improvement_areas": [
+              "Use more descriptive language and specific examples to demonstrate skills and experience"
+            ]
+          },
+          "ats_compatibility": {
+            "score": 30,
+            "keyword_density": 20,
+            "format_compatibility": 80,
+            "section_headers": 20,
+            "recommendations": [
+              "Use standard section headers (e.g., 'Work Experience', 'Education', 'Skills') and incorporate relevant keywords"
+            ]
+          },
+          "strengths": [
+            "Relevant technical skills mentioned"
+          ],
+          "weaknesses": [
+            "Lack of contact information, limited work experience, and no education section"
+          ],
+          "priority_improvements": [
+            {
+              "area": "contact information",
+              "priority": "high",
+              "description": "Include a professional email address, phone number, and LinkedIn profile",
+              "action_items": [
+                "Add contact information to the top of the resume"
+              ]
+            },
+            {
+              "area": "work experience",
+              "priority": "high",
+              "description": "Include specific job titles, company names, dates, and achievements",
+              "action_items": [
+                "Research and add 2-3 work experience entries with quantifiable achievements"
+              ]
+            },
+            {
+              "area": "education",
+              "priority": "medium",
+              "description": "Include an education section with degree, institution, and relevant coursework",
+              "action_items": [
+                "Research and add education information"
+              ]
+            }
+          ],
+          "industry_alignment": {
+            "score": 60,
+            "relevant_keywords": [
+              "Python",
+              "JavaScript",
+              "React"
+            ],
+            "missing_keywords": [
+              "software development",
+              "agile",
+              "testing"
+            ],
+            "recommendations": [
+              "Incorporate industry-specific keywords to demonstrate expertise"
+            ]
+          },
+          "formatting_analysis": {
+            "consistency": 80,
+            "readability": 60,
+            "professional_appearance": 40,
+            "length_appropriateness": 0,
+            "recommendations": [
+              "Use a standard font and formatting throughout, and consider adding relevant sections to increase length to 1-2 pages"
+            ]
+          },
+          "preliminary_metrics": {
+            "word_count": 10,
+            "character_count": 71,
+            "line_count": 4,
+            "readability": {
+              "flesch_reading_ease": 27.485000000000014,
+              "flesch_kincaid_grade": 11.91,
+              "automated_readability_index": 12.771999999999998,
+              "coleman_liau_index": 16.040000000000003
+            },
+            "section_detection": {
+              "contact": {
+                "found": false,
+                "occurrences": 0,
+                "confidence": 0.0
+              },
+              "summary": {
+                "found": false,
+                "occurrences": 0,
+                "confidence": 0.0
+              },
+              "experience": {
+                "found": true,
+                "occurrences": 1,
+                "confidence": 0.5
+              },
+              "education": {
+                "found": false,
+                "occurrences": 0,
+                "confidence": 0.0
+              },
+              "skills": {
+                "found": false,
+                "occurrences": 0,
+                "confidence": 0.0
+              },
+              "projects": {
+                "found": false,
+                "occurrences": 0,
+                "confidence": 0.0
+              },
+              "certifications": {
+                "found": false,
+                "occurrences": 0,
+                "confidence": 0.0
+              },
+              "achievements": {
+                "found": false,
+                "occurrences": 0,
+                "confidence": 0.0
+              }
+            },
+            "keyword_analysis": {
+              "action_verbs": 0,
+              "quantifiable_metrics": 1,
+              "weak_phrases": 0,
+              "action_verb_density": 0.0,
+              "quantifiable_density": 10.0
+            },
+            "formatting_metrics": {
+              "total_lines": 4,
+              "empty_lines": 0,
+              "bullet_points": 0,
+              "all_caps_lines": 0,
+              "average_line_length": 17.0,
+              "formatting_consistency": 1.0
+            }
+          },
+          "detailed_recommendations": {
+            "immediate_actions": [
+              {
+                "action": "Add contact information to the top of the resume",
+                "reason": "Contact information is essential for potential employers to get in touch with you",
+                "example": "Name: John Doe, Email: [johndoe@email.com](mailto:johndoe@email.com), Phone: 123-456-7890, LinkedIn: linkedin.com/in/johndoe",
+                "impact": "Increased chances of getting contacted by potential employers"
+              }
+            ],
+            "content_improvements": [
+              {
+                "section": "Work Experience",
+                "current_issue": "Limited work experience with no specific job titles, company names, or achievements",
+                "recommended_change": "Include specific job titles, company names, dates, and achievements",
+                "example_before": "",
+                "example_after": "Marketing Coordinator, XYZ Corporation (2020-2022)\n- Increased website traffic by 25% through targeted social media campaigns\n- Improved email open rates by 30% through A/B testing and content optimization"
+              },
+              {
+                "section": "Education",
+                "current_issue": "No education section",
+                "recommended_change": "Include an education section with degree, institution, and relevant coursework",
+                "example_before": "",
+                "example_after": "Bachelor's Degree in Marketing, ABC University (2018-2022)\n- Coursework: Marketing Research, Brand Management, Digital Marketing"
+              }
+            ],
+            "formatting_suggestions": [
+              {
+                "area": "Resume layout",
+                "suggestion": "Use a clean and modern resume template with clear headings and bullet points",
+                "rationale": "Improves readability and visual appeal"
+              },
+              {
+                "area": "Font and spacing",
+                "suggestion": "Use a standard font (e.g., Arial, Calibri) and maintain consistent spacing throughout the resume",
+                "rationale": "Enhances professionalism and ease of reading"
+              }
+            ],
+            "keyword_optimization": [
+              {
+                "industry": "Marketing",
+                "missing_keywords": [
+                  "digital marketing",
+                  "social media marketing",
+                  "content marketing",
+                  "marketing analytics"
+                ],
+                "placement_suggestions": [
+                  "Incorporate keywords in work experience bullet points, education section, and summary/objective statement"
+                ]
+              }
+            ]
+          },
+          "competitive_analysis": {
+            "market_position": "below_average",
+            "competitive_score": 10,
+            "benchmark_comparison": {
+              "industry_average": 50,
+              "top_10_percent": 90,
+              "areas_above_average": [],
+              "areas_below_average": [
+                "Overall Score",
+                "Experience Quality",
+                "Skills Quality"
+              ]
+            },
+            "hiring_probability": {
+              "entry_level": 20,
+              "mid_level": 5,
+              "senior_level": 0
+            },
+            "improvement_impact": {
+              "quick_wins": [
+                {
+                  "improvement": "Add relevant skills to enhance Skills Quality",
+                  "effort": "low",
+                  "impact": "medium",
+                  "score_increase": 5
+                },
+                {
+                  "improvement": "Optimize resume for ATS by using keywords and standard formatting",
+                  "effort": "low",
+                  "impact": "high",
+                  "score_increase": 10
+                },
+                {
+                  "improvement": "Gain relevant experience through internships or volunteering",
+                  "effort": "medium",
+                  "impact": "high",
+                  "score_increase": 15
+                }
+              ],
+              "long_term_goals": [
+                {
+                  "goal": "Develop a strong professional portfolio and online presence",
+                  "timeline": "6-12 months",
+                  "impact": "significant increase in competitiveness"
+                },
+                {
+                  "goal": "Acquire industry-recognized certifications or education",
+                  "timeline": "1-2 years",
+                  "impact": "substantial increase in competitiveness"
+                }
+              ]
+            }
+          }
+        },
+        "confidence": 0.64,
+        "processing_time": 5.234809875488281,
+        "error": null
+      }
+    },
+    "vector_analysis": {
+      "enabled": false,
+      "readiness": {
+        "enabled": false,
+        "current_count": 0,
+        "minimum_required": 1000,
+        "progress_percentage": 0.0
+      },
+      "alternative_insights": {
+        "message": "Competitive analysis will be available once we have more user data",
+        "alternative_insights": {
+          "focus": "Individual assessment and market trends",
+          "available_features": [
+            "Skills analysis and recommendations",
+            "Resume quality assessment",
+            "Market demand insights",
+            "Personalized career roadmap"
+          ],
+          "coming_soon": [
+            "Competitive benchmarking",
+            "Salary comparison with similar profiles",
+            "Industry-specific insights"
+          ]
+        },
+        "progress": {
+          "current_users": 0,
+          "target": 1000,
+          "percentage": 0.0
+        }
+      },
+      "message": "Competitive analysis will be available once we have more user data"
+    },
+    "market_analysis": {
+      "enabled": true,
+      "data": {
+        "market_demand": {
+          "overall_demand": "high",
+          "trending_skills": [
+            "Python",
+            "JavaScript",
+            "React",
+            "Machine Learning",
+            "Cloud Computing"
+          ],
+          "stable_skills": [
+            "Software Engineering",
+            "Web Development",
+            "Data Analysis"
+          ],
+          "declining_skills": [
+            "Java",
+            "C++"
+          ]
+        },
+        "salary_analysis": {
+          "estimated_range": {
+            "min": 120000,
+            "max": 200000
+          },
+          "market_position": "above_average",
+          "growth_potential": "high",
+          "location_impact": "significant"
+        },
+        "industry_insights": {
+          "primary_industries": [
+            "Technology",
+            "Finance",
+            "Healthcare"
+          ],
+          "emerging_opportunities": [
+            "Artificial Intelligence",
+            "Internet of Things",
+            "Cybersecurity"
+          ],
+          "industry_growth": [
+            "Technology",
+            "Finance",
+            "E-commerce"
+          ],
+          "remote_opportunities": "medium"
+        },
+        "competitive_landscape": {
+          "competition_level": "medium",
+          "differentiation_opportunities": [
+            "Specialize in a niche area of React",
+            "Develop expertise in a specific industry"
+          ],
+          "skill_gaps_in_market": [
+            "Cloud Computing",
+            "DevOps",
+            "Data Science"
+          ],
+          "career_advancement_paths": [
+            "Senior Software Engineer",
+            "Technical Lead",
+            "Software Architect"
+          ]
+        },
+        "recommendations": {
+          "skill_priorities": [
+            "React",
+            "JavaScript",
+            "Python",
+            "Cloud Computing"
+          ],
+          "industry_focus": [
+            "Technology",
+            "Finance",
+            "Healthcare"
+          ],
+          "positioning_strategy": [
+            "Build a strong online presence",
+            "Network with professionals in the industry"
+          ],
+          "short_term_goals": [
+            "Complete a React certification",
+            "Take on a side project to build a portfolio"
+          ],
+          "long_term_goals": [
+            "Lead a team of software engineers",
+            "Develop a personal project or product"
+          ]
+        }
+      },
+      "analysis_timestamp": "2025-06-15T08:33:42.437910"
+    },
+    "final_assessment": {
+      "executive_summary": {
+        "overall_assessment": "fair",
+        "overall_score": 40,
+        "key_strengths": [
+          "identified 4 relevant skills",
+          "demonstrated potential in skills analysis"
+        ],
+        "key_concerns": [
+          "low resume quality score",
+          "no job match found"
+        ],
+        "recommendation": "conditional_hire",
+        "confidence_level": 60
+      },
+      "detailed_analysis": {
+        "skills_assessment": {
+          "technical_proficiency": 50,
+          "skill_breadth": 40,
+          "skill_depth": 30,
+          "emerging_skills": [],
+          "skill_gaps": [
+            "critical skill gaps to address"
+          ]
+        },
+        "experience_evaluation": {
+          "experience_relevance": 30,
+          "career_progression": 20,
+          "leadership_potential": 10,
+          "industry_expertise": 20,
+          "project_impact": 10
+        },
+        "resume_quality": {
+          "presentation_score": 10,
+          "content_quality": 15,
+          "ats_compatibility": 20,
+          "professional_branding": 5
+        },
+        "market_positioning": {
+          "competitiveness": 30,
+          "salary_expectations": "below_market",
+          "demand_level": "low",
+          "unique_value_proposition": []
+        }
+      },
+      "strategic_recommendations": {
+        "immediate_actions": [
+          {
+            "action": "update resume to improve quality",
+            "priority": "high",
+            "timeline": "urgent",
+            "expected_impact": "improved job prospects",
+            "difficulty": "easy"
+          },
+          {
+            "action": "focus on skill development",
+            "priority": "medium",
+            "timeline": "short-term",
+            "expected_impact": "enhanced technical proficiency",
+            "difficulty": "medium"
+          }
+        ],
+        "skill_development": [
+          {
+            "skill": "emerging technologies",
+            "current_level": "beginner",
+            "target_level": "intermediate",
+            "learning_path": [
+              "online courses",
+              "workshops"
+            ],
+            "timeline": "6 months",
+            "market_impact": "high"
+          },
+          {
+            "skill": "project management",
+            "current_level": "intermediate",
+            "target_level": "advanced",
+            "learning_path": [
+              "certification programs",
+              "practical experience"
+            ],
+            "timeline": "1 year",
+            "market_impact": "medium"
+          }
+        ],
+        "career_guidance": [
+          {
+            "area": "career progression",
+            "recommendation": "seek mentorship",
+            "rationale": "to improve career trajectory",
+            "success_metrics": [
+              "regular progress reviews"
+            ]
+          },
+          {
+            "area": "industry expertise",
+            "recommendation": "networking events",
+            "rationale": "to enhance industry knowledge",
+            "success_metrics": [
+              "number of connections made"
+            ]
+          }
+        ]
+      },
+      "risk_assessment": {
+        "hiring_risks": [
+          {
+            "risk": "low resume quality",
+            "probability": "medium",
+            "impact": "high",
+            "mitigation": "resume update and coaching"
+          },
+          {
+            "risk": "limited job matches",
+            "probability": "high",
+            "impact": "medium",
+            "mitigation": "expand job search criteria"
+          }
+        ],
+        "success_probability": 50,
+        "retention_likelihood": 40,
+        "performance_prediction": 60
+      },
+      "next_steps": {
+        "for_candidate": [
+          "update resume",
+          "focus on skill development"
+        ],
+        "for_recruiter": [
+          "consider alternative candidates",
+          "review job requirements"
+        ],
+        "for_hiring_manager": [
+          "evaluate candidate potential",
+          "discuss development plan"
+        ],
+        "timeline": "within the next 2 weeks"
+      }
+    },
+    "actionable_insights": {
+      "priority_actions": [
+        {
+          "action": "Revise and improve resume quality",
+          "category": "resume",
+          "priority": 8,
+          "effort_required": "medium",
+          "time_to_impact": "immediate",
+          "expected_outcome": "Improved resume quality score, increased chances of getting hired",
+          "resources_needed": [
+            "Resume building guides",
+            "Professional resume review services"
+          ]
+        },
+        {
+          "action": "Explore job matches and tailor application materials",
+          "category": "experience",
+          "priority": 9,
+          "effort_required": "medium",
+          "time_to_impact": "short_term",
+          "expected_outcome": "Increased job matches, improved application success rate",
+          "resources_needed": [
+            "Job search platforms",
+            "Industry reports"
+          ]
+        },
+        {
+          "action": "Develop a skills enhancement plan",
+          "category": "skills",
+          "priority": 7,
+          "effort_required": "low",
+          "time_to_impact": "short_term",
+          "expected_outcome": "Identified areas for skill improvement, enhanced skillset",
+          "resources_needed": [
+            "Skill assessment tools",
+            "Online courses"
+          ]
+        }
+      ],
+      "skill_development_roadmap": {
+        "immediate_focus": [
+          "Improve data analysis skills",
+          "Enhance communication skills"
+        ],
+        "medium_term": [
+          "Develop project management skills",
+          "Learn industry-specific software"
+        ],
+        "long_term": [
+          "Pursue leadership skills",
+          "Develop strategic thinking"
+        ],
+        "learning_resources": [
+          "Coursera",
+          "LinkedIn Learning",
+          "Industry conferences"
+        ]
+      },
+      "career_strategy": {
+        "positioning": "Emphasize transferable skills and potential for growth",
+        "target_roles": [
+          "Data Analyst",
+          "Marketing Coordinator",
+          "Operations Assistant"
+        ],
+        "target_companies": [
+          "Industry-specific companies",
+          "Growth-stage startups"
+        ],
+        "networking_strategy": [
+          "Attend industry events",
+          "Join professional associations",
+          "Connect with alumni"
+        ]
+      },
+      "success_metrics": {
+        "short_term": [
+          "Resume quality score improvement",
+          "Number of job applications submitted"
+        ],
+        "medium_term": [
+          "Skill assessment scores",
+          "Number of networking connections made"
+        ],
+        "long_term": [
+          "Job satisfaction",
+          "Career advancement opportunities"
+        ]
+      }
+    }
+  },
+  "metadata": {
+    "confidence": 0.606,
+    "processing_time": 13.494098901748657,
+    "agent_name": "AssessmentCoordinator",
+    "timestamp": "2025-06-15T08:33:45.954606",
+    "user_id": 14
+  }
+}
+
+=== KEY PATHS ===
+result.success: True
+result.data keys: ['assessment_metadata', 'agent_results', 'vector_analysis', 'market_analysis', 'final_assessment', 'actionable_insights']
+data.final_assessment keys: ['executive_summary', 'detailed_analysis', 'strategic_recommendations', 'risk_assessment', 'next_steps']
+final_assessment.overall_score: None
+final_assessment.key_strengths: None
+final_assessment.areas_for_improvement: None
+data.metadata: {}
+root metadata: {'confidence': 0.606, 'processing_time': 13.494098901748657, 'agent_name': 'AssessmentCoordinator', 'timestamp': '2025-06-15T08:33:45.954606', 'user_id': 14}

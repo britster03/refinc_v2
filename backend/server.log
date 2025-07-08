@@ -1,0 +1,3 @@
+INFO:     Will watch for changes in these directories: ['/Users/ronitvirwani/Downloads/refinc_V2/backend']
+ERROR:    [Errno 48] Address already in use
+✅ GROQ_API_KEY loaded successfully

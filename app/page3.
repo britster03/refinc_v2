@@ -1,0 +1,728 @@
+"use client"
+
+import type React from "react"
+
+import { useState, useEffect } from "react"
+import Link from "next/link"
+import Image from "next/image"
+import { motion, useScroll, useTransform } from "framer-motion"
+import { CheckIcon, ChevronRightIcon, Building2, Sparkles, Zap, Target, Users, ArrowRight, Star, TrendingUp, Brain, Shield, Rocket, Globe, MessageCircle, BarChart3, Layers, Cpu } from "lucide-react"
+
+import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Badge } from "@/components/ui/badge"
+import { Input } from "@/components/ui/input"
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
+import { WaitlistRealtime } from "@/components/waitlist-realtime"
+
+export default function LandingPage() {
+  const [email, setEmail] = useState("")
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [waitlistPosition, setWaitlistPosition] = useState<number | null>(null)
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
+
+  const { scrollYProgress } = useScroll()
+  const yTransform = useTransform(scrollYProgress, [0, 1], [0, -100])
+
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      setMousePosition({ x: e.clientX, y: e.clientY })
+    }
+    window.addEventListener('mousemove', handleMouseMove)
+    return () => window.removeEventListener('mousemove', handleMouseMove)
+  }, [])
+
+  const handleWaitlistSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!email) return
+
+    setIsSubmitting(true)
+    await new Promise((resolve) => setTimeout(resolve, 1500))
+    setWaitlistPosition(Math.floor(Math.random() * 1000) + 1)
+    setIsSubmitting(false)
+  }
+
+  return (
+    <div className="flex flex-col min-h-screen bg-black text-white overflow-x-hidden">
+      {/* Floating Navigation */}
+      <motion.header 
+        initial={{ y: -100 }}
+        animate={{ y: 0 }}
+        transition={{ duration: 0.8, ease: "easeOut" }}
+        className="fixed top-6 left-1/2 transform -translate-x-1/2 z-50 w-full max-w-4xl px-4"
+      >
+        <div className="bg-white/10 backdrop-blur-2xl border border-white/20 rounded-full px-6 py-3 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="relative">
+              <div className="w-10 h-10 bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500 rounded-xl flex items-center justify-center">
+                <Building2 className="h-5 w-5 text-white" />
+              </div>
+              <div className="absolute -top-1 -right-1 w-4 h-4 bg-gradient-to-r from-green-400 to-blue-500 rounded-full animate-pulse" />
+            </div>
+            <span className="text-lg font-bold bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
+              ReferralInc
+            </span>
+            <Badge className="bg-gradient-to-r from-cyan-500 to-purple-500 text-white border-none text-xs px-2 py-1">
+              BETA
+            </Badge>
+          </div>
+
+          <nav className="hidden md:flex items-center gap-6">
+            <Link href="#features" className="text-white/70 hover:text-white transition-all duration-300 hover:scale-110 text-sm font-medium">
+              Features
+            </Link>
+            <Link href="#how-it-works" className="text-white/70 hover:text-white transition-all duration-300 hover:scale-110 text-sm font-medium">
+              How It Works
+            </Link>
+            <Link href="#pricing" className="text-white/70 hover:text-white transition-all duration-300 hover:scale-110 text-sm font-medium">
+              Pricing
+            </Link>
+          </nav>
+
+          <div className="flex items-center gap-3">
+            <Link href="/auth/login">
+              <Button variant="ghost" className="text-white/70 hover:text-white hover:bg-white/10 text-sm">
+                Sign In
+              </Button>
+            </Link>
+            <Link href="/auth/register">
+              <Button className="bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500 hover:from-cyan-600 hover:via-purple-600 hover:to-pink-600 text-white text-sm px-4 py-2 rounded-full font-medium transition-all duration-300 hover:scale-105 shadow-lg shadow-purple-500/25">
+                Join Beta
+              </Button>
+            </Link>
+          </div>
+        </div>
+      </motion.header>
+
+      <main className="flex-1 pt-24">
+        {/* Revolutionary Hero Section */}
+        <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
+          {/* Dynamic Background */}
+          <div className="absolute inset-0">
+            {/* Animated Gradient Mesh */}
+            <div className="absolute inset-0 bg-gradient-to-br from-purple-900/20 via-black to-cyan-900/20" />
+            
+            {/* Floating Geometric Shapes */}
+            <motion.div
+              animate={{ rotate: 360 }}
+              transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+              className="absolute top-1/4 left-1/4 w-64 h-64 bg-gradient-to-r from-cyan-500/20 to-purple-500/20 rounded-full blur-3xl"
+            />
+            <motion.div
+              animate={{ rotate: -360 }}
+              transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
+              className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-gradient-to-r from-pink-500/20 to-cyan-500/20 rounded-full blur-3xl"
+            />
+            
+            {/* Interactive Mouse Follower */}
+            <motion.div
+              className="absolute w-6 h-6 bg-gradient-to-r from-cyan-400 to-purple-400 rounded-full blur-sm pointer-events-none"
+              animate={{
+                x: mousePosition.x - 12,
+                y: mousePosition.y - 12,
+              }}
+              transition={{ type: "spring", damping: 30, stiffness: 200 }}
+            />
+
+            {/* Grid Pattern */}
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_1px_1px,rgba(255,255,255,0.05)_1px,transparent_0)] bg-[length:50px_50px]" />
+          </div>
+
+          <div className="relative z-10 text-center max-w-7xl mx-auto px-4">
+            {/* Floating Badge */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.8, delay: 0.2 }}
+              className="mb-8"
+            >
+              <div className="inline-flex items-center gap-2 bg-gradient-to-r from-cyan-500/20 to-purple-500/20 backdrop-blur-xl border border-white/20 rounded-full px-6 py-3">
+                <Sparkles className="w-5 h-5 text-cyan-400" />
+                <span className="text-white/90 font-medium">AI-Powered Referral Revolution</span>
+                <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
+              </div>
+            </motion.div>
+
+            {/* Main Headline - Ultra Bold */}
+            <motion.h1
+              initial={{ opacity: 0, y: 50 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 1, delay: 0.4 }}
+              className="text-6xl md:text-8xl lg:text-9xl font-black tracking-tight mb-8 leading-none"
+            >
+              <span className="block bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
+                THE FUTURE
+              </span>
+              <span className="block bg-gradient-to-r from-pink-400 via-cyan-400 to-purple-400 bg-clip-text text-transparent">
+                OF HIRING
+              </span>
+              <span className="block text-4xl md:text-6xl lg:text-7xl bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent mt-4">
+                IS HERE
+              </span>
+            </motion.h1>
+
+            {/* Subtitle with Typewriter Effect */}
+            <motion.p
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 1, delay: 0.8 }}
+              className="text-xl md:text-2xl text-white/70 mb-12 max-w-4xl mx-auto leading-relaxed"
+            >
+              Revolutionary AI connects top talent with dream opportunities through intelligent matching, 
+              verified networks, and data-driven insights that transform careers.
+            </motion.p>
+
+            {/* Floating Action Buttons */}
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 1, delay: 1.2 }}
+              className="flex flex-col sm:flex-row gap-6 justify-center mb-16"
+            >
+              <Link href="/auth/register?role=candidate">
+                <Button 
+                  size="lg" 
+                  className="group relative bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500 hover:from-cyan-600 hover:via-purple-600 hover:to-pink-600 text-white shadow-2xl shadow-purple-500/50 px-12 py-6 text-xl font-bold rounded-2xl transition-all duration-300 hover:scale-110 hover:shadow-cyan-500/50"
+                >
+                  <div className="absolute inset-0 bg-gradient-to-r from-cyan-500 to-pink-500 rounded-2xl blur opacity-75 group-hover:opacity-100 transition-opacity" />
+                  <div className="relative flex items-center gap-3">
+                    <Rocket className="w-6 h-6" />
+                    Start Free Beta
+                    <ArrowRight className="w-6 h-6 group-hover:translate-x-1 transition-transform" />
+                  </div>
+                </Button>
+              </Link>
+              <Link href="#how-it-works">
+                <Button 
+                  size="lg" 
+                  variant="outline" 
+                  className="px-12 py-6 text-xl font-bold rounded-2xl border-2 border-white/30 text-white hover:bg-white/10 transition-all duration-300 hover:scale-110 hover:border-cyan-400"
+                >
+                  See How It Works
+                </Button>
+              </Link>
+            </motion.div>
+
+            {/* Floating Stats Cards */}
+            <motion.div
+              initial={{ opacity: 0, y: 50 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 1, delay: 1.6 }}
+              className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto"
+            >
+              {[
+                { icon: Brain, label: "AI-Powered", desc: "Matching Technology" },
+                { icon: Shield, label: "Verified", desc: "Employee Network" },
+                { icon: Zap, label: "Instant", desc: "Connections" }
+              ].map((item, index) => (
+                <motion.div
+                  key={index}
+                  whileHover={{ scale: 1.05, rotateY: 5 }}
+                  className="group relative bg-white/5 backdrop-blur-xl border border-white/20 rounded-3xl p-6 hover:bg-white/10 transition-all duration-300"
+                >
+                  <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/20 to-purple-500/20 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity" />
+                  <div className="relative z-10 text-center">
+                    <div className="w-16 h-16 mx-auto mb-4 bg-gradient-to-r from-cyan-400 to-purple-400 rounded-2xl flex items-center justify-center">
+                      <item.icon className="w-8 h-8 text-white" />
+                    </div>
+                    <h3 className="text-xl font-bold text-white mb-2">{item.label}</h3>
+                    <p className="text-white/70">{item.desc}</p>
+                  </div>
+                </motion.div>
+              ))}
+            </motion.div>
+          </div>
+
+          {/* Scroll Indicator */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 2 }}
+            className="absolute bottom-8 left-1/2 transform -translate-x-1/2"
+          >
+            <motion.div
+              animate={{ y: [0, 10, 0] }}
+              transition={{ duration: 2, repeat: Infinity }}
+              className="w-6 h-10 border-2 border-white/30 rounded-full flex justify-center"
+            >
+              <motion.div
+                animate={{ y: [0, 16, 0] }}
+                transition={{ duration: 2, repeat: Infinity }}
+                className="w-1 h-3 bg-gradient-to-b from-cyan-400 to-purple-400 rounded-full mt-2"
+              />
+            </motion.div>
+          </motion.div>
+        </section>
+
+        {/* Revolutionary How It Works */}
+        <section id="how-it-works" className="relative py-32 overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-b from-black via-purple-900/10 to-black" />
+          
+          <div className="relative z-10 max-w-7xl mx-auto px-4">
+            <motion.div
+              initial={{ opacity: 0, y: 50 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 1 }}
+              className="text-center mb-20"
+            >
+              <Badge className="mb-6 bg-gradient-to-r from-cyan-500/20 to-purple-500/20 backdrop-blur-xl border border-white/20 rounded-full px-6 py-3 text-white/90">
+                Revolutionary Process
+              </Badge>
+              <h2 className="text-5xl md:text-7xl font-black mb-8 leading-tight">
+                <span className="bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">
+                  THREE STEPS TO
+                </span>
+                <br />
+                <span className="text-white">
+                  CAREER REVOLUTION
+                </span>
+              </h2>
+            </motion.div>
+
+            {/* Floating Step Cards */}
+            <div className="relative">
+              {/* Connection Lines */}
+              <div className="absolute top-1/2 left-0 right-0 h-px bg-gradient-to-r from-transparent via-cyan-400/50 to-transparent hidden lg:block" />
+              
+              <div className="grid lg:grid-cols-3 gap-12 lg:gap-0">
+                {[
+                  {
+                    step: "01",
+                    title: "Create Your Digital Twin",
+                    description: "AI analyzes your skills, experience, and career DNA to create a perfect digital representation.",
+                    icon: Users,
+                    gradient: "from-cyan-500 to-blue-500",
+                    delay: 0.2
+                  },
+                  {
+                    step: "02", 
+                    title: "AI Quantum Matching",
+                    description: "Our quantum AI processes millions of data points to find your perfect career opportunities.",
+                    icon: Cpu,
+                    gradient: "from-purple-500 to-pink-500",
+                    delay: 0.4
+                  },
+                  {
+                    step: "03",
+                    title: "Instant Success Network",
+                    description: "Connect with verified insiders and unlock opportunities that transform your career forever.",
+                    icon: Zap,
+                    gradient: "from-pink-500 to-cyan-500",
+                    delay: 0.6
+                  }
+                ].map((item, index) => (
+                  <motion.div
+                    key={index}
+                    initial={{ opacity: 0, y: 100, rotateX: 45 }}
+                    whileInView={{ opacity: 1, y: 0, rotateX: 0 }}
+                    whileHover={{ scale: 1.05, rotateY: 5 }}
+                    transition={{ duration: 0.8, delay: item.delay }}
+                    className="relative group"
+                  >
+                    {/* Floating Card */}
+                    <div className="relative bg-white/5 backdrop-blur-2xl border border-white/20 rounded-3xl p-8 hover:bg-white/10 transition-all duration-500 group-hover:shadow-2xl">
+                      {/* Gradient Overlay */}
+                      <div className={`absolute inset-0 bg-gradient-to-r ${item.gradient} opacity-0 group-hover:opacity-20 rounded-3xl transition-opacity duration-500`} />
+                      
+                      {/* Step Number */}
+                      <div className="absolute -top-4 -left-4 w-16 h-16 bg-gradient-to-r from-cyan-400 to-purple-400 rounded-2xl flex items-center justify-center text-2xl font-black text-white shadow-2xl">
+                        {item.step}
+                      </div>
+
+                      {/* Icon */}
+                      <div className={`w-20 h-20 mx-auto mb-6 bg-gradient-to-r ${item.gradient} rounded-3xl flex items-center justify-center group-hover:scale-110 transition-transform duration-500`}>
+                        <item.icon className="w-10 h-10 text-white" />
+                      </div>
+
+                      {/* Content */}
+                      <div className="relative z-10 text-center">
+                        <h3 className="text-2xl font-bold text-white mb-4 group-hover:text-cyan-400 transition-colors">
+                          {item.title}
+                        </h3>
+                        <p className="text-white/70 leading-relaxed">
+                          {item.description}
+                        </p>
+                      </div>
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Mind-Blowing Features Section */}
+        <section id="features" className="relative py-32 overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-b from-black via-cyan-900/10 to-black" />
+          
+          <div className="relative z-10 max-w-7xl mx-auto px-4">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.8 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 1 }}
+              className="text-center mb-20"
+            >
+              <h2 className="text-5xl md:text-7xl font-black mb-8 leading-tight">
+                <span className="bg-gradient-to-r from-pink-400 via-cyan-400 to-purple-400 bg-clip-text text-transparent">
+                  FEATURES THAT
+                </span>
+                <br />
+                <span className="text-white">
+                  BLOW MINDS
+                </span>
+              </h2>
+            </motion.div>
+
+            {/* Bento Grid Layout */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 h-auto lg:h-[800px]">
+              {/* Large Feature Card */}
+              <motion.div
+                initial={{ opacity: 0, x: -50 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                whileHover={{ scale: 1.02 }}
+                transition={{ duration: 0.8 }}
+                className="lg:col-span-2 lg:row-span-2 group relative overflow-hidden bg-gradient-to-br from-purple-900/20 to-cyan-900/20 backdrop-blur-2xl border border-white/20 rounded-3xl p-8"
+              >
+                <div className="absolute inset-0 bg-gradient-to-br from-purple-500/20 to-cyan-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                <div className="relative z-10">
+                  <div className="flex items-center gap-4 mb-6">
+                    <div className="w-16 h-16 bg-gradient-to-r from-purple-500 to-cyan-500 rounded-2xl flex items-center justify-center">
+                      <Brain className="w-8 h-8 text-white" />
+                    </div>
+                    <div>
+                      <h3 className="text-3xl font-bold text-white mb-2">AI Quantum Brain</h3>
+                      <p className="text-white/70">Next-generation intelligence</p>
+                    </div>
+                  </div>
+                  <p className="text-xl text-white/80 mb-8 leading-relaxed">
+                    Our AI doesn't just match—it understands your career DNA, predicts success patterns, 
+                    and creates opportunities that don't exist yet.
+                  </p>
+                  
+                  {/* Animated Visualization */}
+                  <div className="relative h-64 bg-black/30 rounded-2xl overflow-hidden">
+                    <div className="absolute inset-0 bg-gradient-to-r from-purple-500/20 to-cyan-500/20" />
+                    <div className="absolute inset-4 border border-white/20 rounded-xl">
+                      <motion.div
+                        animate={{ rotate: 360 }}
+                        transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
+                        className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-32 h-32 border-2 border-cyan-400 rounded-full"
+                      >
+                        <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-4 h-4 bg-cyan-400 rounded-full" />
+                        <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-1/2 w-4 h-4 bg-purple-400 rounded-full" />
+                      </motion.div>
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+
+              {/* Vertical Feature Cards */}
+              {[
+                {
+                  icon: Shield,
+                  title: "Verified Elite Network",
+                  description: "Connect with authenticated professionals from Fortune 500 companies.",
+                  gradient: "from-cyan-500 to-blue-500"
+                },
+                {
+                  icon: BarChart3,
+                  title: "Success Prediction",
+                  description: "AI predicts your success rate with 99.7% accuracy before you apply.",
+                  gradient: "from-pink-500 to-purple-500"
+                },
+                {
+                  icon: MessageCircle,
+                  title: "Instant Insider Access",
+                  description: "Get direct access to hiring managers and team leads instantly.",
+                  gradient: "from-purple-500 to-cyan-500"
+                },
+                {
+                  icon: TrendingUp,
+                  title: "Career Acceleration",
+                  description: "Fast-track your career with opportunities that match your ambition.",
+                  gradient: "from-cyan-500 to-pink-500"
+                }
+              ].map((feature, index) => (
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0, y: 50 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  whileHover={{ scale: 1.05, rotateY: 5 }}
+                  transition={{ duration: 0.6, delay: index * 0.1 }}
+                  className="group relative overflow-hidden bg-white/5 backdrop-blur-2xl border border-white/20 rounded-3xl p-6 hover:bg-white/10 transition-all duration-500"
+                >
+                  <div className={`absolute inset-0 bg-gradient-to-r ${feature.gradient} opacity-0 group-hover:opacity-20 rounded-3xl transition-opacity duration-500`} />
+                  <div className="relative z-10">
+                    <div className={`w-16 h-16 mb-6 bg-gradient-to-r ${feature.gradient} rounded-2xl flex items-center justify-center`}>
+                      <feature.icon className="w-8 h-8 text-white" />
+                    </div>
+                    <h3 className="text-xl font-bold text-white mb-3">{feature.title}</h3>
+                    <p className="text-white/70 leading-relaxed">{feature.description}</p>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Futuristic Pricing */}
+        <section id="pricing" className="relative py-32 overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-b from-black via-purple-900/10 to-black" />
+          
+          <div className="relative z-10 max-w-6xl mx-auto px-4">
+            <motion.div
+              initial={{ opacity: 0, y: 50 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 1 }}
+              className="text-center mb-20"
+            >
+              <h2 className="text-5xl md:text-7xl font-black mb-8 leading-tight">
+                <span className="bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">
+                  BETA ACCESS
+                </span>
+                <br />
+                <span className="text-white">
+                  PRICING
+                </span>
+              </h2>
+            </motion.div>
+
+            <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+              {[
+                {
+                  name: "Beta Pioneer",
+                  price: "FREE",
+                  description: "For early adopters and visionaries",
+                  features: [
+                    "AI-powered profile creation",
+                    "Basic quantum matching",
+                    "5 connections per month",
+                    "Community access",
+                    "Email support"
+                  ],
+                  gradient: "from-cyan-500 to-blue-500",
+                  popular: false
+                },
+                {
+                  name: "Beta Elite",
+                  price: "$19",
+                  period: "/month",
+                  description: "For career revolutionaries",
+                  features: [
+                    "Everything in Pioneer",
+                    "Advanced AI matching",
+                    "Unlimited connections",
+                    "Priority support",
+                    "Early feature access",
+                    "Success analytics"
+                  ],
+                  gradient: "from-purple-500 to-pink-500",
+                  popular: true
+                }
+              ].map((plan, index) => (
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0, y: 50, rotateY: 45 }}
+                  whileInView={{ opacity: 1, y: 0, rotateY: 0 }}
+                  whileHover={{ scale: 1.05, rotateY: -5 }}
+                  transition={{ duration: 0.8, delay: index * 0.2 }}
+                  className={`group relative overflow-hidden backdrop-blur-2xl border border-white/20 rounded-3xl p-8 ${
+                    plan.popular ? 'ring-2 ring-purple-500 bg-white/10' : 'bg-white/5'
+                  } hover:bg-white/15 transition-all duration-500`}
+                >
+                  {plan.popular && (
+                    <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
+                      <div className="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-6 py-2 rounded-full text-sm font-bold">
+                        MOST POPULAR
+                      </div>
+                    </div>
+                  )}
+
+                  <div className={`absolute inset-0 bg-gradient-to-r ${plan.gradient} opacity-0 group-hover:opacity-20 rounded-3xl transition-opacity duration-500`} />
+                  
+                  <div className="relative z-10">
+                    <div className="text-center mb-8">
+                      <h3 className="text-2xl font-bold text-white mb-2">{plan.name}</h3>
+                      <p className="text-white/70 mb-6">{plan.description}</p>
+                      <div className="mb-6">
+                        <span className="text-5xl font-black text-white">{plan.price}</span>
+                        {plan.period && <span className="text-white/70 text-xl ml-2">{plan.period}</span>}
+                      </div>
+                    </div>
+                    
+                    <ul className="space-y-4 mb-8">
+                      {plan.features.map((feature, i) => (
+                        <li key={i} className="flex items-center gap-3">
+                          <div className={`w-6 h-6 bg-gradient-to-r ${plan.gradient} rounded-full flex items-center justify-center flex-shrink-0`}>
+                            <CheckIcon className="w-4 h-4 text-white" />
+                          </div>
+                          <span className="text-white/90">{feature}</span>
+                        </li>
+                      ))}
+                    </ul>
+                    
+                    <Button
+                      className={`w-full py-4 text-lg font-bold rounded-2xl transition-all duration-300 hover:scale-105 ${
+                        plan.popular 
+                          ? 'bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 shadow-2xl shadow-purple-500/50' 
+                          : 'bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-600 hover:to-blue-600 shadow-2xl shadow-cyan-500/50'
+                      }`}
+                    >
+                      {plan.price === "FREE" ? "Start Free Beta" : "Upgrade to Elite"}
+                    </Button>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Epic Waitlist CTA */}
+        <section className="relative py-32 overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-r from-purple-900/50 via-black to-cyan-900/50" />
+          
+          <div className="relative z-10 max-w-5xl mx-auto px-4">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.8 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 1 }}
+              className="relative overflow-hidden bg-gradient-to-r from-purple-900/30 via-pink-900/30 to-cyan-900/30 backdrop-blur-2xl border border-white/30 rounded-3xl p-12 text-center"
+            >
+              {/* Animated Background */}
+              <div className="absolute inset-0 bg-gradient-to-r from-purple-500/20 via-pink-500/20 to-cyan-500/20 animate-pulse" />
+              
+              <div className="relative z-10">
+                <motion.div
+                  animate={{ rotate: [0, 360] }}
+                  transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
+                  className="w-20 h-20 mx-auto mb-8 bg-gradient-to-r from-cyan-400 to-purple-400 rounded-2xl flex items-center justify-center"
+                >
+                  <Sparkles className="w-10 h-10 text-white" />
+                </motion.div>
+                
+                <h2 className="text-4xl md:text-6xl font-black mb-6 leading-tight">
+                  <span className="bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
+                    JOIN THE REVOLUTION
+                  </span>
+                </h2>
+                
+                <p className="text-xl text-white/80 mb-12 max-w-3xl mx-auto leading-relaxed">
+                  Be among the first to experience the future of AI-powered referrals. 
+                  Limited beta spots available for visionaries only.
+                </p>
+
+                {!waitlistPosition ? (
+                  <div className="max-w-md mx-auto">
+                    <form onSubmit={handleWaitlistSubmit} className="space-y-6">
+                      <Input
+                        type="email"
+                        placeholder="Enter your email to join the revolution"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        className="h-16 text-center text-lg bg-white/10 backdrop-blur-xl border-white/30 text-white placeholder-white/50 rounded-2xl"
+                        required
+                      />
+                      <Button
+                        type="submit"
+                        size="lg"
+                        disabled={isSubmitting}
+                        className="w-full bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500 hover:from-cyan-600 hover:via-purple-600 hover:to-pink-600 text-white h-16 text-xl font-bold rounded-2xl transition-all duration-300 hover:scale-105 shadow-2xl shadow-purple-500/50"
+                      >
+                        {isSubmitting ? (
+                          <div className="flex items-center gap-3">
+                            <motion.div
+                              animate={{ rotate: 360 }}
+                              transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                              className="w-6 h-6 border-2 border-white border-t-transparent rounded-full"
+                            />
+                            Joining Revolution...
+                          </div>
+                        ) : (
+                          <div className="flex items-center gap-3">
+                            <Rocket className="w-6 h-6" />
+                            Join Beta Revolution
+                            <ArrowRight className="w-6 h-6" />
+                          </div>
+                        )}
+                      </Button>
+                    </form>
+                  </div>
+                ) : (
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ duration: 0.8 }}
+                  >
+                    <WaitlistRealtime userPosition={waitlistPosition} />
+                  </motion.div>
+                )}
+              </div>
+            </motion.div>
+          </div>
+        </section>
+      </main>
+
+      {/* Futuristic Footer */}
+      <footer className="relative py-20 overflow-hidden border-t border-white/10">
+        <div className="absolute inset-0 bg-gradient-to-b from-black to-gray-900" />
+        
+        <div className="relative z-10 max-w-6xl mx-auto px-4">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-12">
+            <div className="col-span-2">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="w-12 h-12 bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500 rounded-xl flex items-center justify-center">
+                  <Building2 className="h-6 w-6 text-white" />
+                </div>
+                <div>
+                  <span className="text-2xl font-bold text-white">ReferralInc</span>
+                  <Badge className="ml-3 bg-gradient-to-r from-cyan-500 to-purple-500 text-white border-none text-xs px-2 py-1">
+                    BETA
+                  </Badge>
+                </div>
+              </div>
+              <p className="text-white/70 mb-6 max-w-md leading-relaxed">
+                Revolutionizing the future of hiring through AI-powered referrals. 
+                Connecting talent with opportunity in ways never before possible.
+              </p>
+              <div className="flex gap-4">
+                <div className="w-12 h-12 bg-white/10 backdrop-blur-xl border border-white/20 rounded-xl flex items-center justify-center hover:bg-white/20 transition-colors cursor-pointer">
+                  <span className="text-white font-bold">𝕏</span>
+                </div>
+                <div className="w-12 h-12 bg-white/10 backdrop-blur-xl border border-white/20 rounded-xl flex items-center justify-center hover:bg-white/20 transition-colors cursor-pointer">
+                  <span className="text-white font-bold">in</span>
+                </div>
+              </div>
+            </div>
+            
+            <div>
+              <h3 className="font-bold text-white mb-4">Product</h3>
+              <ul className="space-y-3">
+                <li><Link href="#features" className="text-white/70 hover:text-cyan-400 transition-colors">Features</Link></li>
+                <li><Link href="#pricing" className="text-white/70 hover:text-cyan-400 transition-colors">Pricing</Link></li>
+                <li><Link href="#" className="text-white/70 hover:text-cyan-400 transition-colors">Beta Program</Link></li>
+              </ul>
+            </div>
+            
+            <div>
+              <h3 className="font-bold text-white mb-4">Company</h3>
+              <ul className="space-y-3">
+                <li><Link href="#" className="text-white/70 hover:text-cyan-400 transition-colors">About</Link></li>
+                <li><Link href="#" className="text-white/70 hover:text-cyan-400 transition-colors">Blog</Link></li>
+                <li><Link href="#" className="text-white/70 hover:text-cyan-400 transition-colors">Careers</Link></li>
+              </ul>
+            </div>
+          </div>
+          
+          <div className="border-t border-white/10 pt-8 flex flex-col md:flex-row justify-between items-center">
+            <p className="text-white/70">© 2024 ReferralInc. Revolutionizing the future.</p>
+            <div className="flex gap-6 mt-4 md:mt-0">
+              <Link href="#" className="text-white/70 hover:text-cyan-400 transition-colors text-sm">Privacy</Link>
+              <Link href="#" className="text-white/70 hover:text-cyan-400 transition-colors text-sm">Terms</Link>
+            </div>
+          </div>
+        </div>
+      </footer>
+    </div>
+  )
+}
