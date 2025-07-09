@@ -736,6 +736,75 @@ def init_db():
         )
     """)
     
+    # Job Applications table
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS job_applications (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            user_id INTEGER NOT NULL,
+            
+            -- Job details
+            company TEXT NOT NULL,
+            position TEXT NOT NULL,
+            department TEXT,
+            location TEXT,
+            salary_range TEXT,
+            job_url TEXT,
+            job_description TEXT,
+            
+            -- Application tracking
+            status TEXT NOT NULL DEFAULT 'not_applied' CHECK (
+                status IN ('not_applied', 'applied', 'pending', 'interview', 'rejected', 'hired')
+            ),
+            applied_date TIMESTAMP,
+            last_status_update TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            
+            -- AI integration
+            ai_match_score REAL,
+            ai_analysis_data TEXT, -- JSON object
+            source TEXT NOT NULL DEFAULT 'manual_entry' CHECK (
+                source IN ('ai_recommendation', 'manual_entry', 'referral_opportunity')
+            ),
+            analysis_session_id INTEGER,
+            
+            -- Notes and tracking
+            notes TEXT,
+            interview_date TIMESTAMP,
+            offer_date TIMESTAMP,
+            rejection_date TIMESTAMP,
+            rejection_reason TEXT,
+            
+            -- Referral integration
+            referral_id INTEGER,
+            referral_employee_id INTEGER,
+            referral_status TEXT CHECK (
+                referral_status IN ('requested', 'pending', 'accepted', 'declined')
+            ),
+            
+            -- Timeline tracking
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            
+            FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE,
+            FOREIGN KEY (referral_id) REFERENCES referrals (id) ON DELETE SET NULL,
+            FOREIGN KEY (referral_employee_id) REFERENCES users (id) ON DELETE SET NULL,
+            FOREIGN KEY (analysis_session_id) REFERENCES analysis_sessions (id) ON DELETE SET NULL
+        )
+    """)
+    
+    # Job Application Status History table
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS job_application_status_history (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            job_application_id INTEGER NOT NULL,
+            old_status TEXT,
+            new_status TEXT NOT NULL,
+            changed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            notes TEXT,
+            
+            FOREIGN KEY (job_application_id) REFERENCES job_applications (id) ON DELETE CASCADE
+        )
+    """)
+
     # Create indexes for better performance
     cursor.execute("CREATE INDEX IF NOT EXISTS idx_users_email ON users(email)")
     cursor.execute("CREATE INDEX IF NOT EXISTS idx_users_role ON users(role)")
@@ -747,6 +816,13 @@ def init_db():
     cursor.execute("CREATE INDEX IF NOT EXISTS idx_notifications_user ON notifications(user_id)")
     cursor.execute("CREATE INDEX IF NOT EXISTS idx_sessions_user ON user_sessions(user_id)")
     cursor.execute("CREATE INDEX IF NOT EXISTS idx_sessions_token ON user_sessions(refresh_token)")
+    
+    # Job applications indexes
+    cursor.execute("CREATE INDEX IF NOT EXISTS idx_job_applications_user ON job_applications(user_id)")
+    cursor.execute("CREATE INDEX IF NOT EXISTS idx_job_applications_status ON job_applications(status)")
+    cursor.execute("CREATE INDEX IF NOT EXISTS idx_job_applications_company ON job_applications(company)")
+    cursor.execute("CREATE INDEX IF NOT EXISTS idx_job_applications_referral ON job_applications(referral_id)")
+    cursor.execute("CREATE INDEX IF NOT EXISTS idx_job_app_status_history ON job_application_status_history(job_application_id)")
     
     # Indexes for new profile tables
     cursor.execute("CREATE INDEX IF NOT EXISTS idx_user_projects_user ON user_projects(user_id)")

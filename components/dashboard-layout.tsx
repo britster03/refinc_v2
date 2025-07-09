@@ -7,18 +7,17 @@ import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { UserAvatar } from "@/components/ui/user-avatar"
 import {
-  Building2,
+  BarChart3,
   Users,
   FileText,
+  Coins,
+  MessageSquare,
+  Brain,
   Bell,
   Settings,
-  LogOut,
   Menu,
-  X,
-  BarChart3,
-  Brain,
-  MessageSquare,
-  Coins,
+  LogOut,
+  Briefcase
 } from "lucide-react"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import { NotificationDropdown } from "@/components/notifications/notification-dropdown"
@@ -140,6 +139,7 @@ export default function DashboardLayout({ children, role }: DashboardLayoutProps
 
   const candidateNavItems = [
     { href: "/dashboard/candidate", label: "Dashboard", icon: <BarChart3 className="h-5 w-5" /> },
+    { href: "/job-grid", label: "Job Applications", icon: <Briefcase className="h-5 w-5" /> },
     { href: "/employees", label: "Find Employees", icon: <Users className="h-5 w-5" /> },
     { href: "/referrals", label: "My Referrals", icon: <FileText className="h-5 w-5" /> },
     { href: "/coins", label: "Coins & Rewards", icon: <Coins className="h-5 w-5" /> },

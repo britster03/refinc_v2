@@ -1462,4 +1462,180 @@ class CoinsAnalytics(BaseModel):
     total_premium_tokens_in_circulation: int
     top_earning_sources: List[Dict[str, Any]]
     redemption_trends: List[Dict[str, Any]]
-    achievement_completion_rates: List[Dict[str, Any]] 
+    achievement_completion_rates: List[Dict[str, Any]]
+
+# Job Application Models
+class JobApplicationStatus(str, Enum):
+    NOT_APPLIED = "not_applied"
+    APPLIED = "applied"
+    PENDING = "pending"
+    INTERVIEW = "interview"
+    REJECTED = "rejected"
+    HIRED = "hired"
+
+class JobApplicationSource(str, Enum):
+    AI_RECOMMENDATION = "ai_recommendation"
+    MANUAL_ENTRY = "manual_entry"
+    REFERRAL_OPPORTUNITY = "referral_opportunity"
+
+class JobApplication(Base):
+    __tablename__ = "job_applications"
+    
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    
+    # Job details
+    company = Column(String(255), nullable=False)
+    position = Column(String(255), nullable=False)
+    department = Column(String(255), nullable=True)
+    location = Column(String(255), nullable=True)
+    salary_range = Column(String(100), nullable=True)
+    job_url = Column(Text, nullable=True)
+    job_description = Column(Text, nullable=True)
+    
+    # Application tracking
+    status = Column(String(20), nullable=False, default=JobApplicationStatus.NOT_APPLIED.value)
+    applied_date = Column(DateTime, nullable=True)
+    last_status_update = Column(DateTime, default=datetime.utcnow)
+    
+    # AI integration
+    ai_match_score = Column(Float, nullable=True)  # Match score from AI analysis
+    ai_analysis_data = Column(JSON, nullable=True)  # Detailed AI analysis
+    source = Column(String(30), nullable=False, default=JobApplicationSource.MANUAL_ENTRY.value)
+    analysis_session_id = Column(Integer, ForeignKey("analysis_sessions.id"), nullable=True)
+    
+    # Notes and tracking
+    notes = Column(Text, nullable=True)
+    interview_date = Column(DateTime, nullable=True)
+    offer_date = Column(DateTime, nullable=True)
+    rejection_date = Column(DateTime, nullable=True)
+    rejection_reason = Column(Text, nullable=True)
+    
+    # Referral integration
+    referral_id = Column(Integer, ForeignKey("referrals.id"), nullable=True)
+    referral_employee_id = Column(Integer, ForeignKey("users.id"), nullable=True)
+    referral_status = Column(String(30), nullable=True)  # requested, pending, accepted, declined
+    
+    # Timeline tracking
+    created_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    
+    # Relationships
+    user = relationship("User", foreign_keys=[user_id])
+    referral = relationship("Referral", back_populates="job_applications")
+    referral_employee = relationship("User", foreign_keys=[referral_employee_id])
+    analysis_session = relationship("AnalysisSession")
+    status_history = relationship("JobApplicationStatusHistory", back_populates="job_application")
+
+class JobApplicationStatusHistory(Base):
+    __tablename__ = "job_application_status_history"
+    
+    id = Column(Integer, primary_key=True, index=True)
+    job_application_id = Column(Integer, ForeignKey("job_applications.id"), nullable=False)
+    
+    old_status = Column(String(20), nullable=True)
+    new_status = Column(String(20), nullable=False)
+    changed_at = Column(DateTime, default=datetime.utcnow)
+    notes = Column(Text, nullable=True)
+    
+    # Relationships
+    job_application = relationship("JobApplication", back_populates="status_history")
+
+class JobApplicationCreate(BaseModel):
+    company: str
+    position: str
+    department: Optional[str] = None
+    location: Optional[str] = None
+    salary_range: Optional[str] = None
+    job_url: Optional[str] = None
+    job_description: Optional[str] = None
+    notes: Optional[str] = None
+    ai_match_score: Optional[float] = None
+    ai_analysis_data: Optional[Dict[str, Any]] = None
+    source: JobApplicationSource = JobApplicationSource.MANUAL_ENTRY
+    analysis_session_id: Optional[int] = None
+
+class JobApplicationUpdate(BaseModel):
+    company: Optional[str] = None
+    position: Optional[str] = None
+    department: Optional[str] = None
+    location: Optional[str] = None
+    salary_range: Optional[str] = None
+    job_url: Optional[str] = None
+    job_description: Optional[str] = None
+    status: Optional[JobApplicationStatus] = None
+    notes: Optional[str] = None
+    interview_date: Optional[datetime] = None
+    offer_date: Optional[datetime] = None
+    rejection_date: Optional[datetime] = None
+    rejection_reason: Optional[str] = None
+
+class JobApplicationResponse(BaseModel):
+    id: int
+    company: str
+    position: str
+    department: Optional[str] = None
+    location: Optional[str] = None
+    salary_range: Optional[str] = None
+    job_url: Optional[str] = None
+    job_description: Optional[str] = None
+    status: JobApplicationStatus
+    applied_date: Optional[datetime] = None
+    last_status_update: datetime
+    ai_match_score: Optional[float] = None
+    ai_analysis_data: Optional[Dict[str, Any]] = None
+    source: JobApplicationSource
+    notes: Optional[str] = None
+    interview_date: Optional[datetime] = None
+    offer_date: Optional[datetime] = None
+    rejection_date: Optional[datetime] = None
+    rejection_reason: Optional[str] = None
+    referral_id: Optional[int] = None
+    referral_employee_id: Optional[int] = None
+    referral_status: Optional[str] = None
+    created_at: datetime
+    updated_at: datetime
+    referral_employee: Optional[UserResponse] = None
+
+class JobApplicationFilter(BaseModel):
+    status: Optional[JobApplicationStatus] = None
+    company: Optional[str] = None
+    source: Optional[JobApplicationSource] = None
+    min_match_score: Optional[float] = None
+    date_from: Optional[datetime] = None
+    date_to: Optional[datetime] = None
+    has_referral: Optional[bool] = None
+    limit: int = 50
+    offset: int = 0
+
+class JobApplicationBulkUpdate(BaseModel):
+    job_application_ids: List[int]
+    status: Optional[JobApplicationStatus] = None
+    notes: Optional[str] = None
+
+class JobRecommendation(BaseModel):
+    company: str
+    position: str
+    department: Optional[str] = None
+    location: Optional[str] = None
+    salary_range: Optional[str] = None
+    job_url: Optional[str] = None
+    job_description: Optional[str] = None
+    match_score: float
+    match_reasons: List[str]
+    skills_match: List[str]
+    missing_skills: List[str]
+    ai_analysis: Dict[str, Any]
+    has_employee_connection: bool = False
+    connected_employees: List[UserResponse] = []
+
+class JobApplicationAnalytics(BaseModel):
+    total_applications: int
+    by_status: Dict[str, int]
+    by_source: Dict[str, int]
+    average_match_score: Optional[float] = None
+    application_trend: List[Dict[str, Any]]
+    success_rate: float
+    avg_time_to_response: Optional[float] = None
+    top_companies: List[Dict[str, Any]]
+    referral_success_rate: Optional[float] = None 

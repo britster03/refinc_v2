@@ -10,7 +10,37 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Badge } from "@/components/ui/badge"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { FormattedDate } from "@/components/ui/formatted-date"
-import { ArrowRight, Clock, CheckCircle, XCircle, FileText, Users, TrendingUp, Star, Loader2, AlertCircle, Eye, Brain, Target, Award, ArrowUpRight, Plus, Search, Filter, Sparkles, Zap, BarChart3, Calendar, ChevronDown, X, Settings, Wand2, RefreshCw, MessageSquare } from "lucide-react"
+import {
+  FileText,
+  Search,
+  Plus,
+  MessageSquare,
+  Clock,
+  TrendingUp,
+  Target,
+  Brain,
+  Sparkles,
+  ArrowRight,
+  ChevronDown,
+  Filter,
+  X,
+  AlertCircle,
+  Users,
+  BarChart3,
+  Zap,
+  RefreshCw,
+  Briefcase,
+  ArrowUpRight,
+  Eye,
+  CheckCircle,
+  XCircle,
+  Settings,
+  Wand2,
+  Award,
+  Calendar,
+  Star,
+  Loader2
+} from "lucide-react"
 import Link from "next/link"
 import { ReferralAPI, type Referral } from "@/lib/api/referrals"
 import { EmployeeAPI, type Employee } from "@/lib/api/employees"
@@ -747,6 +777,13 @@ export default function CandidateDashboard() {
                 </motion.div>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <ActionButton
+                  href="/job-grid"
+                  icon={Briefcase}
+                  title="Job Applications"
+                  description="Manage your job search pipeline"
+                  delay={0.05}
+                />
                 <ActionButton
                   href="/employees"
                   icon={Search}

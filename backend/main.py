@@ -17,7 +17,7 @@ from slowapi.middleware import SlowAPIMiddleware
 import time
 import logging
 
-from routers import auth, users, referrals, conversations, feedback, notifications, settings, video_calls, ai_analysis, free_conversations, admin, coins
+from routers import auth, users, referrals, conversations, feedback, notifications, settings, video_calls, ai_analysis, free_conversations, admin, coins, job_grid
 from database import init_db
 
 # Configure logging
@@ -197,6 +197,12 @@ app.include_router(
     settings.router, 
     prefix="/settings", 
     tags=["Settings"]
+)
+
+app.include_router(
+    job_grid.router, 
+    prefix="/api", 
+    tags=["Job Grid"]
 )
 
 app.include_router(
